@@ -1,0 +1,362 @@
+---
+title: "Learning preferences of international and domestic students in Canadian postsecondary education"
+subtitle: "What attracts international students to Canada?"
+author: 
+  - Zoie So
+thanks: "Code and data are available at: https://github.com/zoieso/finalpaper_zoie_so"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+abstract: "Canada is one of the most popular study abroad destinations in the world. The large number of international students contributes significantly to the Canadian economy. This paper, therefore, examines the factors that entice them in choosing Canada for their studies. The dataset about The Postsecondary Student Information System (PSIS) is utilized to compare the programs registered by international and domestic students. As a result of the analysis, there is a large variation in institution type, education level, the field of study, as well as the location of the institution, which reflects the different learning preferences of the international student cohort. \\par \\textbf{Keywords: Learning preferences, International students, Canadian students, Postsecondary education} "
+output:
+  bookdown::pdf_document2
+toc: TRUE
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages(tidyverse)
+#install.packages("knitr")
+#install.package("janitor")
+#install.package("dplyr")
+#install.packages("ggplot2")
+#install.packages("scales")
+#install.packages("reshape2")
+library(tidyverse)
+library(knitr)
+library(janitor)
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(reshape2)
+```
+
+# Introduction
+
+Canada is always one of the top study abroad destinations among the world. The implication of its high-quality education is clear, meanwhile, it does attract millions of international students every year. Their significant contribution to the Canadian economy growth should not be overlooked. Since international students pay substantially higher tuition than domestic students, the reliance of universities on international students as a revenue source has grown over the past decade. Apart from education services, the total annual expenditures of international students in both retails and properties sectors, as well as the spending from their visiting families and friends, also contributed an enormous amount to economic activities. In a non-direct way, it translates to jobs supported in the Canadian economy. In return, along with the graduates turning to job market, they will be a source of highly trained professionals to relief the existing labour shortage. Thus, a clearer understanding about what these international students are expecting in their study in Canada can retain Canada as the best study abroad destination, as well as to encourage the constant economic growth.
+
+In this paper, the open access data from the Government of Canada on Statistics Canada is utilized. The dataset about The Postsecondary Student Information System (PSIS) is derived to examine the learning preferences of domestic and international students in institution type, education level, the field of study and the location of the institution. Apart from discussing the trends of choosing Canada as the study destination in the past decade, the analysis is focus on the dataset obtained in 2019, which is the most updated set available online. 
+
+In section \@ref(data), the source of the dataset used in this paper, its methodology, its strengths and weaknesses will be explained. Then, section \@ref(results) presents the results of the increasing numbers of international students and the comparison of learning performance between international and domestic students. Finally, more discussions about the factors that attract them in choosing Canada as their study destination will be brought up in section \@ref(discussion). 
+
+# Data
+
+## Overview of the data
+
+To assess the detailed information on on enrollments in Canadian public postsecondary education Canadian public postsecondary education, a set of data by Postsecondary Student Information System (PSIS) from the Government of Canada that was released on Statistics Canada is utilized in this paper (Government of Canada, 2021). This raw dataset records the number of postsecondary graduates, by year, geography, institution type, International Standard Classification of Education (ISCED), Field of study, the status of students in Canada, gender, etc. The reference dates are from 1992 to 2019. 
+
+To begin with the analysis, it starts with cleaning and extracting the necessary data. For the reference dates, only the information for the past decade is kept, which means those from 2009 to 2019, for the purpose of reviewing the recent trend of an increasing number of international students. In an effort to examine the learning preferences of international and domestic students, the status of students in Canada is important for comparison. Then, the variables about the number of the location of the institution, institution type, education level and the field of study are also selected, while few of them are not applicable, unclassified, not reported and unknown vectors are excluded. Meanwhile, the irrelevant variables regarding learning preferences are opted out, including gender. Such steps make analysis clearer and easier.
+
+In this paper, the dataset is processed and analyzed in R (R Core Team, 2020) primarily using the tidyverse (Wickham et al., 2019) and janitor (Zablotski, 2021) packages. Cansim (von Bergmann et al., 2021) is used for extracting data from Statistics Canada. After that, tables and graphs are created with using knitr (Xie, 2021) and ggplot2 (Wickham, 2016). The packages including dplyr (Wickham, et al., 2021), scales (Wickham, 2022) and reshape2 (Wickham, 2007) are used to support generating the R markdown report.
+
+## Methodology
+
+Postsecondary Student Information System (PSIS) is an active annual national survey that collects information pertaining to the programs and courses offered at an institution, as well as information regarding the students themselves and the program(s) and course(s) in which they were registered, or from which they have graduated. The subjects focus on educational attainment, education, training and learning, and fields of study. The start date of the reference period is usually during April to after the end of the institution's previous winter term, which collects from December through February.
+
+This survey is a census with a cross-sectional design. The target population is the list of Canadian public postsecondary institutions, including universities and colleges, compiled by the Centre for Education Statistics of Statistics Canada. Responding to this survey is mandatory. The data is collected directly from the Canadian postsecondary institutions by sending information pertaining to their programs and their students. 
+
+## Strengths and weakness
+
+One of the biggest strengths of the dataset is its accuracy. First, the data are collected directly from the registered Canadian postsecondary institutions compiled by the Centre for Education Statistics of Statistics Canada. Responding to this survey is mandatory, therefore minimizing under coverage. There is seldom missing and non-response information. For example, the response rate was 96.4% in 2019/2020. Second, the survey is very stable, including the questionnaires and respondents. The survey is annual, there do not be a large change within the variables and list of institutions. Besides, the required information is also essential to the institutions themselves, such as the number of enrollment, the details of the programs, etc. The information is kept tracked closely and remained the latest, so they just need to send out those electronic flat files in their existing database to respond to the survey. The minimal additional work leads to less error. The Data Verification System (DVS) helps with error detection. The DVS verifies data and identifies problems, then edits are run if there are any incorrect data type and coherence errors before sending to the system.
+
+Another strength is the information is consistent among each institution. According to the united educational system, the definitions of the programs, including the institution type, education level and the field of study are clear. For example, the postsecondary institutions are binary, they are university and college. Moreover, a bachelor's program in Accounting is undoubtedly under the Business and Administration faculty. Unlike other sectors, the perception of the concept can be subtle. All the respondents have a clear understanding of the above items, and Statistics Canada seldom requires editing and imputation of the dataset, which avoids the result of the analysis. Cognitive biases and selection biases do not happen in this dataset. 
+
+Regarding weakness, the dataset is comparatively not fair to those short-cycle programs. Considering the enrollments are based on the single chosen period, it means students who are not enrolled during this time period are excluded. As a result, this has a greater impact on those intake of short programs because they do not cover the two continuous annual surveys. These are not small sums.
+
+The other weakness is the variety of the dataset. The content of the surveys is only the basic information on enrollments in the programs and students. Detailed information, such as the students' original nationality, the duration of the courses and the tuition fee of the programs is missing. These are important elements influencing their learning preference. Last but not least, no sampling is done for the survey, therefore all data collected rely heavily on the responses from the intuitions.
+
+# Results
+
+## Student numbers
+Table \@ref(tab:overviewtable) shows an overview of the student number in 2019, separating into Canadian and international students, which are 461,733 and 123,177 respectively. Overall, there are 6 hundred thousand students. The ratio of international students is 0.2. In other words, for every 10 students, there are 2 of them who are international students. The ratio is clearly high, and their impacts should not be minimized. 
+
+Meanwhile, Figure \@ref(fig:linenumber) indicates the trends of the increasing number of international students from 2009 to 2019. From 2009 to 2016, the increment was steady, however, a double increment was recorded from 2017 to 2019, implying that Canada will become increasingly popular among international students. Compared to Canadian students, even though there was a small increase from 2009 to 2015, a drop was registered in 2016 and it continues through 2019. Though the total number of Canadian students is way larger than the number of international students, it looks as though the percentage of international students may rise in the future.
+
+```{r overviewtable, tab.cap="Overview of the numbers of enrollment in Canada, 2019", echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
+
+keeps_rawdata <- read_csv("C:\\Users\\User\\Desktop\\starter_folder-main\\starter_folder-main\\inputs\\data\\keeps_students_data.csv")
+
+# Overview: data selection 
+
+table_data <- 
+  keeps_rawdata|>
+  filter(ref_date == "2019", institution_type == "Total, institution type", education_level == "Total, International Standard Classification of Education (ISCED)", field_of_study == "Total, field of study", geo == "Canada")|>
+  select(citizen, value)|>
+  adorn_totals() |>
+  pivot_wider(names_from = citizen, values_from = value)
+
+table_data2 <- clean_names(table_data) |>
+  mutate("Ratio" = international_students/total)|>
+  mutate_if(is.numeric,
+            round,
+            digits = 1)
+
+table <-
+  table_data2|> 
+  kable(col.names = c("Canadian students", "International students", "Total number of students", "Ratio of international students"),
+        caption = "Overview of the numbers of enrollment in Canada, 2019", 
+        booktabs = TRUE,
+        align = rep('c', 5),
+        escape = FALSE)
+
+table
+
+```
+
+```{r linenumber, fig.cap="The numbers of enrollment in Canada, 2009-2019", echo = FALSE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 6}
+
+# Total student: data selection 
+
+number_data<-
+  keeps_rawdata|>
+  filter(geo == "Canada", institution_type == "Total, institution type", education_level == "Total, International Standard Classification of Education (ISCED)", field_of_study == "Total, field of study")|>
+  select(ref_date, value, citizen)
+
+# build graph
+
+line_number <- 
+  ggplot(data = number_data, mapping = aes(x = ref_date, y = value, group = citizen))+
+  geom_line(aes(color = citizen))+
+  geom_point(aes(color= citizen), size = 5)+
+  theme_minimal()
+
+line_number <- line_number + scale_y_continuous(labels = comma) + 
+  scale_x_continuous(breaks = pretty_breaks()) +
+  scale_x_continuous(breaks = 2009:2019)
+
+line_number <- line_number + labs(title = "The numbers of enrollment in Canada, 2009-2019",
+                                          x = "Year",
+                                          y = "No. of student")
+
+line_number <- line_number + scale_color_discrete(name = "Status of student in Canada", labels = c("Canadian Students", "International Students")) + theme(plot.title = element_text(size = 15))
+
+line_number <- line_number + theme(legend.position="bottom")
+
+line_number
+
+```
+
+## Institution type
+
+Figure \@ref(fig:bartype) presents the enrollment numbers by institution type in 2019. Nearly 60% of international students study in colleges. International students study mostly at colleges rather than universities, while Canadian students prefer universities over colleges. To put it another way, the ratio of international students and Canadian students in college is higher than in university. For every 10 students in universities, there are only 1.5 of them who are international students. However, for every 10 students in colleges, there are 2.8 of them are international students. Nevertheless, Canadian students are still the majority in both universities and colleges. 
+
+```{r bartype, fig.cap="Enrollments by institution type in Canada, 2019", echo = FALSE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 7}
+
+# Institution type: data selection 
+
+type_data<-
+  keeps_rawdata|>
+  filter(ref_date == "2019")|>
+  filter(geo == "Canada", education_level == "Total, International Standard Classification of Education (ISCED)", field_of_study == "Total, field of study")|>
+  filter(institution_type %in% c("University","College"))|>
+  select(institution_type, value, citizen)
+
+# build graph
+
+bar_type <-
+  ggplot(data =type_data, mapping = aes(x = reorder(institution_type, -value), y = value, fill = citizen)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  theme_minimal()+
+  labs(title = "Enrollments by institution type in Canada, 2019", 
+       x = "Institution type", 
+       y = "No. of student") +
+  theme_minimal()+
+  scale_fill_brewer(palette = "Set1")
+
+bar_type <- bar_type + scale_y_continuous(labels = comma) 
+
+bar_type <- bar_type + guides(fill=guide_legend(title="Status of student in Canada"))
+
+bar_type <- bar_type + theme(legend.position="bottom")
+
+bar_type 
+
+```
+
+## Education level
+Figure \@ref(fig:barlevel) shows the numbers of enrollment by education level in 2019. For international students, the majority pursue tertiary short-cycle education. Half of the total number of international students choose these programs. Though bachelor's or equivalent and master's or equivalent are the next, their combined numbers are still less than those in short-cycle tertiary education, which are 36%. It explains the higher ratio of international students in colleges than universities because most colleges provide short-cycle tertiary education instead of degree programs. Post-secondary non-tertiary education, doctoral or equivalent and upper secondary education is in the 4th to 6th place, less than 12%. For Canadian students, most of them select bachelor's or equivalent education, followed by short-cycle tertiary education, post-secondary non-tertiary education and master's or equivalent. There is little difference in numbers between these four educational paths. Those studying in doctoral or equivalent and upper secondary education are comparatively less common, which matches the same trends with international students. The most obvious variation is that post-secondary non-tertiary education and bachelor's or equivalent are more popular among Canadian students, but it seems less attractive to international students, which leads to the lowest ratio of international students among all these education levels. 
+
+```{r barlevel, fig.cap="Enrollments by education level in Canada, 2019", echo = FALSE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 7}
+
+# Level type: data selection 
+
+level_data<-
+  keeps_rawdata|>
+  filter(ref_date == "2019")|>
+  filter(geo == "Canada")|>
+  filter(!education_level %in% c("Total, International Standard Classification of Education (ISCED)", "Not applicable, International Standard Classification of Education (ISCED)"))|>
+  filter(institution_type == "Total, institution type",
+         field_of_study == "Total, field of study")|>
+  select(education_level, value, citizen)|>
+  arrange(citizen, desc(value))|>
+  mutate(education_level = factor(education_level, levels = unique(education_level)))
+    
+# build graph
+  
+bar_level <-
+  ggplot(data =level_data, mapping = aes(x = reorder (education_level, -value), y = value, fill = citizen)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  theme_minimal()+
+  labs(title = "Enrollments by education level in Canada, 2019", 
+       x = "Education level", 
+       y = "No. of student") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2")
+
+bar_level <- bar_level + scale_y_continuous(labels = comma) 
+
+bar_level <- bar_level + guides(fill=guide_legend(title="Status of student in Canada"))
+  
+bar_level <- bar_level + scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 1),
+                                          labels = function(x) stringr::str_wrap(x, width = 20))
+  
+bar_level <- bar_level + theme(legend.position="bottom")
+
+bar_level
+
+```
+
+## The field of study
+
+The numbers of enrollment numbers by the field of study in 2019 are indicated in Figure \@ref(fig:barfield), which shows the interest in the study field among international and Canadian students. There is a clear difference in the field of study for international students. A large number of them study business, management and public administration - 46% of the total number of international students, followed by architecture, engineering and related technologies, mathematics, computer and information sciences and social and behavioural sciences and law. Compared with these business and science subjects, art subjects are less attractive to them, they include humanities, health and related and visual and performing arts, and communications technologies fields, etc. The least popular field is education and personal improvement and leisure. For Canadian students, the differences in enrollment numbers are much smaller, in fact, they are quite close. Business, management and public administration are still the first place among Canadian students, followed by those less desired by international students, which are health and related fields, social and behavioural sciences and law, architecture, engineering and related technologies and humanities, that reflect the fact that art subjects are more well-liked by Canadian students. Same with international students, personal improvement and leisure have the smallest number of students. Besides, it is worth pointing out that the highest ratio of international students happens in mathematics, computer and information sciences. It is the third most popular field of study for international students but in the 10th place for Canadian students, which leads to 4 international students for every 10 mathematics students. The next are business, management and public administration and architecture, engineering and related technologies. The lowest ratio of international students is in education, with only 1 international student for every 20 students. 
+
+```{r barfield, fig.cap="Enrollments by the field of study in Canada, 2019", echo = FALSE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 7}
+
+# Field of study: data selection 
+
+field_data<-
+  keeps_rawdata|>
+  filter(ref_date == "2019")|>
+  filter(geo == "Canada")|>
+  filter(!field_of_study %in% c("Total, field of study", "Unclassified", "Other  [12]"))|>
+  select(field_of_study, value, citizen)|>
+  group_by(field_of_study, citizen)|>
+  summarise(sum_value = sum(value, na.rm = TRUE))|>
+  arrange(citizen, desc(sum_value))|>
+  mutate(field_of_study = factor(field_of_study, levels = unique(field_of_study)))|>
+  mutate(field_of_study = gsub("\\[.*?\\]", "", field_of_study))
+
+# build graph
+  
+bar_field <-
+  ggplot(data =field_data, aes(x = reorder(field_of_study, -sum_value), y = sum_value, fill = citizen)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  theme_minimal()+
+  labs(title = "Enrollments by the field of study in Canada, 2019", 
+       x = "The field of study", 
+       y = "No. of student") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set3")
+
+bar_field <- bar_field + scale_y_continuous(labels = comma) 
+  
+bar_field <- bar_field + scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 2),
+                                          labels = function(x) stringr::str_wrap(x, width = 20))
+
+bar_field <- bar_field + guides(fill=guide_legend(title="Status of student in Canada"))
+  
+bar_field <- bar_field + theme(legend.position="bottom")
+
+bar_field
+
+```
+
+## The location of the institution
+
+Another important factor to consider when studying abroad is the institution's location. Figure \@ref(fig:bargeo) shows the numbers of enrollment by geography. With no doubt, most international and Canadian students study in post-secondary institutions in Ontario. For international students, the majority of them stay in Ontario, which is 61%, while the next most popular destinations are British Columbia (14%) and Quebec (13%), both of which have similar enrollment numbers. Comparatively, the other provinces are less popular to both international and Canadian students, they are followed by Alberta, Nova Scotia, Manitoba, Saskatchewan, New Brunswick, Newfoundland and Labrador, and Prince Edward Island is in the last place, the total percentage is less than 12%. For Canadian students, the second place in Quebec and the third place in British Columbia, which is different from international students. Ontario has the highest ratio of international students, of which almost 3 international students per 10 students. Surprisingly, Quebec has the lowest ratio, is the 3rd popular destination for international students and the 2nd popular one for Canadian students, with 1 international student for every 10 students. Followed by Alberta, with 1.3 international students per 10 students.
+
+```{r bargeo, fig.cap="Enrollments by the location of institution in Canada, 2019", echo = FALSE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 7}
+
+# Geo: data selection 
+
+geo_data <- 
+  keeps_rawdata|>
+  filter(ref_date == "2019", institution_type == "Total, institution type", education_level == "Total, International Standard Classification of Education (ISCED)", field_of_study == "Total, field of study")|>
+  filter(!geo %in% c("Canada", "Territories"))|>
+  select(geo, value, citizen)
+
+# build graph
+  
+bar_geo <-
+  ggplot(data = geo_data, aes(x = reorder(geo, -value), y = value, fill = citizen)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  theme_minimal()+
+  labs(title = "Enrollments by the location of institution in Canada, 2019", 
+       x = "Province", 
+       y = "No. of student") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set1")
+
+bar_geo <- bar_geo + scale_x_discrete(guide = ggplot2::guide_axis(n.dodge = 2),
+                                          labels = function(x) stringr::str_wrap(x, width = 20))
+
+bar_geo <- bar_geo + guides(fill=guide_legend(title="Status of student in Canada"))
+  
+bar_geo <- bar_geo + theme(legend.position="bottom")
+
+bar_geo 
+
+
+```
+
+# Discussion
+
+## The rise of international students
+It is unarguable that the proportion of international students surged in recent years, while the number of Canadian students dropped, and this bridged the gap. By contrast, the number of Canadian students was decreasing, perhaps because the birth rate was low or some Canadian students pursued their studies abroad. According to CIC News, Canada was ranked 3rd globally in foreign student destinations, behind the United States and Australia in 2020 (El-Assal, 2020). It is predictable that more and more international students will choose Canada as their study destination in the future. 
+
+The increment was contributed by the Canadian International Education Strategy 2019–2024, which describes different strategies to attract interactional students to study in Canada. including additional scholarships for international students and increased promotions of international experience in Canada. Meanwhile, it also identifies international students who contributed an estimated $21.6 billion to Canada’s GDP and supported almost 170,000 jobs in Canada, particularly those who chose to remain in Canada after graduation, as contributing significantly to Canada's long-term economic success and competitiveness (Government of Canada, 2019). It demonstrates that international students are in high demand in Canada. It is a win-win situation. 
+
+## The learning preference of international students
+
+### Institution type and education level
+
+First, it is surprising that most international students study in colleges instead of universities. Similarly, more of them take short-cycle tertiary education other than bachelor’s/ master’s or equivalent programs. Generally, pursuing a better and higher education is one of the key considerations to studying in a different country. However, tertiary is the lowest level of postsecondary education. It explains the reason why the number of international students in colleges is larger than those of universities since most colleges provide short and entry-level courses. This implies the fact that Canada is successfully attracted international students taking short courses here. Compared to long courses, short courses are more attractive to people of diverse backgrounds due to lower admission requirements and a more affordable tuition fee. It appeals to those who are seeking a flexible, short-term continuing education schedule. Studying abroad is more than just education, it is also a holistic experience of a lifetime. By studying abroad, you can brush up on your language skills, meet a diverse range of people, understand a new culture and explore interesting places, gain independence, etc. Canada, is one of the largest English-speaking countries, with an exceptional range, choice, and depth of short-term courses for enrollment, which makes it attractive for people who wish to continue studying during vacations abroad. Moreover, it is also a safe and stable country, which encourages students to pursue multiculturalism and diversity here.
+
+Meanwhile, international students who study bachelor’s and master’s or equivalent programs are the second-largest sector. Canada is well known in world academic circles with a high quality of education. There are many top-ranked global universities in Canada. The latest QS World University Rankings in 2022 include 28 Canadian universities. The best of these is the University of Toronto, which ranks 26th globally, with McGill University behind it, ranking 27th. The University of British Columbia is also in the global top 50. It is for this reason that Canada attracts international students seeking higher education here.
+
+### The field of study 
+
+Regarding the field of study, international students are more interested in business, engineering and computer science subjects. One major advantage of studying in business is that it is so versatile and the skills you learn can be applied to various companies and positions. Compared to domestic students, engineering and computer science subjects are less popular but it is a different story to international students. It is not only because they are a growing field and lead to a good salary worldwide, but the skills and techniques can also be applied everywhere without any restrictions. Unlike health, social and education-related subjects, they are heavily affected by local systems and regulations. Moreover, less demanding fields, such as agriculture and virtual arts, are not popular among international students. We can see that international students tend to study courses that they could apply when they return to their own country, thus ensuring that their study investment is worthwhile.
+
+### Location of the institution 
+
+Last, it is not surprising that Ontario has the largest international student population of all provinces in Canada, since it is the most populous and developed province. Foreign students have an easier time adjusting to life in Ontario. While British Columbia and Quebec are the next, they all boast a range of acclaimed post-secondary institutions, such as McGill University and the University of British Columbia. Despite having the second-largest population in Canada, Quebec has fewer international students, mostly due to the French-speaking community. Comparatively, the other provinces, such as Nova Scotia, Manitoba, Saskatchewan, New Brunswick, Newfoundland and Labrador, and Prince Edward Island, are less developed. With extreme weather and incomplete facilities, it is less attractive to international students.
+
+## Weaknesses and suggestions for the future 
+
+Comparative studies are relatively straightforward, which are divided by institution type, education level, the field of study and location of the institution. Cross-section comparisons can be made to explore the topic in more depth if there is a chance. For example, to investigate the differences between studying in a bachelor's program in colleges and universities, the programs at different education levels, and the preferences of study by geography, etc.
+
+Moreover, the dataset only covers the basic information on enrollments in the programs and students. It would be great to learn more detailed information, such as students’ demographics and age, then it could create a better understanding of the learning preferences and the factors of the international students. 
+
+Another major weakness is that the latest data is from 2019, right before 2020, the year that changed the world by COVID-19. Predictably, the pandemic of  COVID-19 and the travel restrictions must be a barrier for international students to study in Canada, as well as the potential financial situation of the students, The enrollment in 2020/2021 school year must be certainly dropped. It would be great if this significant year could be included. In the future, a more complicated, detailed and latest report can be created to explore deeply the learning preferences of international students. The findings would be beneficial for the Government of Canada to prominent the existing advantages and meet policy and strategy needs to attract more international students in the future.
+
+\newpage
+
+# References
+
+•	El-Assal, K. (2020, February 20). 642,000 international students: Canada now ranks 3rd globally in foreign student attraction. CIC News. https://www.cicnews.com/2020/02/642000-international-students-canada-now-ranks-3rd-globally-in-foreign-student-attraction-0213763.html#gs.y0dpgu 
+
+•	Government of Canada. (2019). Building on Success: International Education Strategy (2019-2024). Global Affairs Canada. Cat. No.: FR5-165/2019E-PDF. ISBN: 978-0-660-32078-6. https://www.international.gc.ca/education/strategy-2019-2024-strategie.aspx?lang=eng 
+
+•	Government of Canada. (2021, November 24). Postsecondary graduates, by institution type, status of student in Canada and gender. https://open.canada.ca/data/en/dataset/9867db5f-476f-4033-9cb2-f39e5b4cd44c 
+
+•	R Core Team. (2020). R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. https://www.R-project.org/
+
+•	von Bergmann, J., Dmitry S. (2021). cansim: functions and convenience tools for accessing Statistics Canada data tables. V0.3.10
+
+•	Wickham, H. (2007). “Reshaping Data with the reshape Package.” Journal of Statistical Software, 21(12), 1–20. http://www.jstatsoft.org/v21/i12/ 
+
+•	Wickham, H. (2016). Ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. https://ggplot2.tidyverse.org 
+
+•	Wickham, H., Mara, A., Jennifer, B., Winston, C., Lucy, D. M, Romain, F., Garrett, G., et al. (2019). Welcome to the tidyverse. Journal of Open Source Software 4 (43): 1686. https://doi.org/10.21105/joss.01686
+
+•	Wickham, H., Romain, F., Lionel, H., Kirill, M. (2021). Dplyr: A Grammar of Data Manipulation. https://CRAN.R-project.org/package=dplyr 
+
+•	Wickham H., Seidel, D. (2022). scales: Scale Functions for Visualization. https://scales.r-lib.org, https://github.com/r-lib/scales
+
+•	Xie, Y. (2021). Knitr: A General-Purpose Package for Dynamic Report Generation in R. https://yihui.org/knitr/.
+
+•	Zablotski, Y. (2021). yuzaR-Blog: R package reviews {janitor} clean your data!. https://yuzar-blog.netlify.app/posts/2021-01-02-r-package-reviews-janitor-clean-your-data/ 
+
+
+
+
